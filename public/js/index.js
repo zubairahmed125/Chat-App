@@ -3,7 +3,7 @@ var socket = io();
     console.log('connected to server');
 
     socket.on('newMessage', function(msg){
-      console.log('from server', msg);
+      console.log('from client', msg);
     });
 
     socket.on('newUser', function(msg){
