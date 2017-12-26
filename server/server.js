@@ -26,9 +26,11 @@ io.on('connection', (socket) =>{
     console.log('disconnected from server');
   });
 
-  socket.on('createMsg', function(msg){
-    console.log('Create Message', msg);
+  socket.on('createMsg', function(msg, callback){
     io.emit('newMessage', generateMessage(msg.from, msg.text));
+    callback({
+      msg:'data received by server successfully'
+    });
   });
 });
 
