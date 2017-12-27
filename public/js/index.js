@@ -39,7 +39,7 @@ var socket = io();
       from:'User',
       text: jQuery('[name=message]').val()
     }, function(){
-
+        jQuery('[name=message]').val('')
     });
   });
 
@@ -48,24 +48,31 @@ var geopostion = jQuery("#geoBtn");
     if(!navigator.geolocation){
       return alert('Your Browser does not support geo location');
     }
+    geopostion.attr('disabled', 'disabled').text('sending location...');
     navigator.geolocation.getCurrentPosition(function(position){
+      console.log(position.coords.latitude);
+      console.log(position.coords.longitude);
     socket.emit('geoloc', {
       lat: position.coords.latitude,
       lan: position.coords.longitude
     });
-
+    geopostion.removeAttr('disabled').text('sending location');
     }, function(){
+        geopostion.removeAttr('disabled').text('sending location');
       alert('Unable to fetch location');
     });
   });
 
   socket.on('sendLoc', function(msg) {
-    console.log(msg);
-    var url = `https://www.google.com/maps?q=${msg.Latitude},${msg.Longitude}`;
+
+    var url = `https://www.google.com/maps?q=${msg.Latitude},${msg.longitude}`;
     var li = jQuery('<li></li>');
     var a = jQuery('<a target="_blank">My Current Location </a>');
+    var add = msg.Address;
     a.attr('href', url);
     li.append(a);
+    li.append(add);
+
     jQuery('#geoLocationmsg').append(li);
 
   });

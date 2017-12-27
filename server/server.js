@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const socketIO = require('socket.io');
 const http = require('http');
+const axios = require('axios');
 
 const {generateMessage} = require('./utils/message');
 
@@ -34,9 +35,15 @@ io.on('connection', (socket) =>{
   });
 
   socket.on('geoloc', function(loc, callback){
-    console.log(loc);
-    io.emit('sendLoc', {Latitude: loc.lat, Longitude: loc.lan});
-
+    //Getting Location
+    url = `http://maps.googleapis.com/maps/api/geocode/json?latlng=${loc.lat},${loc.lan}&sensor=true`;
+    axios.get(url).then((res) =>{
+      console.log(res.data.results[0].formatted_address);
+      //Get Latitude,Longitude
+      io.emit('sendLoc', {Latitude: loc.lat, longitude: loc.lan, Address: res.data.results[0].formatted_address});
+    }).catch((e) =>{
+      console.log(e);
+    });
   });
 });
 
