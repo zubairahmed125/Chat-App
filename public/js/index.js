@@ -4,6 +4,7 @@ var socket = io();
 
     socket.on('newUser', function(msg){
       console.log(msg);
+
     });
 
   });
@@ -40,6 +41,33 @@ var socket = io();
     }, function(){
 
     });
+  });
+
+var geopostion = jQuery("#geoBtn");
+  geopostion.on('click', function(e){
+    if(!navigator.geolocation){
+      return alert('Your Browser does not support geo location');
+    }
+    navigator.geolocation.getCurrentPosition(function(position){
+    socket.emit('geoloc', {
+      lat: position.coords.latitude,
+      lan: position.coords.longitude
+    });
+
+    }, function(){
+      alert('Unable to fetch location');
+    });
+  });
+
+  socket.on('sendLoc', function(msg) {
+    console.log(msg);
+    var url = `https://www.google.com/maps?q=${msg.Latitude},${msg.Longitude}`;
+    var li = jQuery('<li></li>');
+    var a = jQuery('<a target="_blank">My Current Location </a>');
+    a.attr('href', url);
+    li.append(a);
+    jQuery('#geoLocationmsg').append(li);
+
   });
 
   socket.on('disconnect', function(){

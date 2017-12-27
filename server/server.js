@@ -32,6 +32,12 @@ io.on('connection', (socket) =>{
       msg:'data received by server successfully'
     });
   });
+
+  socket.on('geoloc', function(loc, callback){
+    console.log(loc);
+    io.emit('sendLoc', {Latitude: loc.lat, Longitude: loc.lan});
+
+  });
 });
 
 
